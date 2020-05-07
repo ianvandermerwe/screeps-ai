@@ -1,41 +1,95 @@
 var functionCreepRespawner = {
   run: function () {
 
-    // --------------- Harvester Spawn Check --------------
-    var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-    // console.log('Harvesters: ' + harvesters.length);
+    /*
+    --- CONSTANTS ---
+      MOVE:           50
+      WORK:           100
+      CARRY:          50
+      ATTACK:         80
+      RANGED_ATTACK : 150
+      HEAL :          250
+      TOUGH :         10
+      CLAIM :         600
+     */
 
-    if (harvesters.length < 3) {
-      var newHarversterName = 'Harvester' + Game.time;
-      console.log('Spawning new harvester: ' + newHarversterName);
+    //TODO: create tiered system to scale workers depending the stored energy + extentions.
+    var creepSpawnConfigs = [
+      { // NORMAL HARVESTER
+        role: 'harvester',
+        quantity: 4,
+        priority: 1000,
+        body: [WORK, WORK, CARRY, CARRY, MOVE]
+      },
+      { // BIG HARVESTER
+        role: 'harvester',
+        quantity: 2,
+        priority: 990,
+        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
+      },
+      { // NORMAL BUILDER
+        role: 'builder',
+        quantity: 2,
+        priority: 900,
+        body: [WORK, CARRY, CARRY, CARRY, MOVE]
+      },
+      { // NORMAL UP-GRADER
+        role: 'upgrader',
+        quantity: 2,
+        priority: 800,
+        body: [WORK, WORK, CARRY, MOVE]
+      },
+      { // NORMAL REPAIRER
+        role: 'repairer',
+        quantity: 2,
+        priority: 790,
+        body: [MOVE, WORK, CARRY, CARRY]
+      },
+      { // BIG UP-GRADER
+        role: 'upgrader',
+        quantity: 1,
+        priority: 700,
+        body: [MOVE, MOVE, MOVE, WORK, WORK, CARRY, CARRY, CARRY, CARRY]
+      },
+      { // CLAIMER
+        role: 'claimer',
+        quantity: 1,
+        priority: 600,
+        body: [MOVE, CLAIM]
+      },
+      //TODO: add defence attacker
+    ];
 
-      Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE, MOVE], newHarversterName,
-        {memory: {role: 'harvester'}});
-    }
+    creepSpawnConfigs.forEach(function (creepSpawnConfig) {
+      var creeps = _.filter(Game.creeps, (creep) => creep.memory.role === creepSpawnConfig.role);
+      var creepBodyCheck = false;
+      var creepQuantity = 0;
 
-    // --------------- Builder Spawn Check --------------
-    var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    // console.log('Harvesters: ' + harvesters.length);
+      creeps.forEach(function (creep) {
+        if (JSON.stringify(creep.memory.body) === JSON.stringify(creepSpawnConfig.body)) {
+          creepQuantity++;
+          // creepBodyCheck = true;
+        }
+      });
 
-    if (builders.length < 2) {
-      var newBuilderName = 'Builder' + Game.time;
-      console.log('Spawning new builder: ' + newBuilderName);
+      // TODO: add code to allow for priority of creep spawning.
+      if (creepQuantity === creepSpawnConfig.quantity) {
+        creepBodyCheck = true;
+        // console.log(creepBodyCheck, creepQuantity, creepSpawnConfig.quantity);
+      }
 
-      Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE, MOVE], newBuilderName,
-        {memory: {role: 'builder'}});
-    }
+      if (!creepBodyCheck) {
+        var newCreepName = (creepSpawnConfig.role.charAt(0).toUpperCase() + creepSpawnConfig.role.slice(1)) + '_' + Game.time;
 
-    // --------------- Upgrader Spawn Check --------------
-    var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    // console.log('Harvesters: ' + harvesters.length);
-
-    if (upgraders.length < 1) {
-      var newUpgraderName = 'Builder' + Game.time;
-      console.log('Spawning new upgrader: ' + newUpgraderName);
-
-      Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE, MOVE], newUpgraderName,
-        {memory: {role: 'upgrader'}});
-    }
+        console.log('Spawning new ' + creepSpawnConfig.role + ': ' + newCreepName);
+        Game.spawns['Spawn1'].spawnCreep(creepSpawnConfig.body, newCreepName, {
+          memory: {
+            role: creepSpawnConfig.role,
+            body: creepSpawnConfig.body
+          }
+        });
+      }
+    });
 
     // Spawning notification
     if (Game.spawns['Spawn1'].spawning) {
