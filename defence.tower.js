@@ -7,14 +7,16 @@ var defenceTower = {
       if (closestHostile) {
         tower.attack(closestHostile);
       } else {
-        if (tower.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
-          var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
-          });
-          if (closestDamagedStructure) {
-            tower.repair(closestDamagedStructure);
-          }
-        }
+        //TODO: write code to only repair if spawn and extentions are fully recharged.
+
+        // if (tower.store.getUsedCapacity(RESOURCE_ENERGY) > 500) {
+        //   var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+        //     filter: (structure) => structure.hits < structure.hitsMax
+        //   });
+        //   if (closestDamagedStructure) {
+        //     tower.repair(closestDamagedStructure);
+        //   }
+        // }
       }
     }
   }

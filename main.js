@@ -1,17 +1,18 @@
 var memoryCleanup = require('function.memory.cleanup');
 var functionCreepRespawner = require('function.creep.respawner');
+var functionFlagManager = require('function.flag.manager');
 
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
 var roleDefender = require('role.defender');
+var roleFlagClaimer = require('role.flag.claimer');
 
 var defenceTower = require('defence.tower');
 
 module.exports.loop = function () {
   functionCreepRespawner.run();
-  memoryCleanup.run();
 
   // var towers = creep.room.find(FIND_STRUCTURES, {
   //   filter: (structure) => {
@@ -45,10 +46,12 @@ module.exports.loop = function () {
         roleRepairer.run(creep);
       }
       if (creep.memory.role == 'claimer') {
-        roleRepairer.run(creep);
+        roleFlagClaimer.run(creep);
       }
     } else {
       // this is an enemy creep
     }
   }
+
+  memoryCleanup.run();
 };

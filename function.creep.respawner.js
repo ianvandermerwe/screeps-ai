@@ -1,6 +1,7 @@
 var functionCreepRespawner = {
   run: function () {
 
+    var debug = false;
     /*
     --- CONSTANTS ---
       MOVE:           50
@@ -15,15 +16,15 @@ var functionCreepRespawner = {
 
     //TODO: create tiered system to scale workers depending the stored energy + extentions.
     var creepSpawnConfigs = [
-      { // NORMAL HARVESTER
-        role: 'harvester',
-        quantity: 4,
-        priority: 1000,
-        body: [WORK, WORK, CARRY, CARRY, MOVE]
-      },
+      // { // NORMAL HARVESTER
+      //   role: 'harvester',
+      //   quantity: 1,
+      //   priority: 1000,
+      //   body: [WORK, WORK, CARRY, CARRY, MOVE]
+      // },
       { // BIG HARVESTER
         role: 'harvester',
-        quantity: 2,
+        quantity: 5,
         priority: 990,
         body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
       },
@@ -39,12 +40,12 @@ var functionCreepRespawner = {
         priority: 800,
         body: [WORK, WORK, CARRY, MOVE]
       },
-      { // NORMAL REPAIRER
-        role: 'repairer',
-        quantity: 2,
-        priority: 790,
-        body: [MOVE, WORK, CARRY, CARRY]
-      },
+      // { // NORMAL REPAIRER
+      //   role: 'repairer',
+      //   quantity: 2,
+      //   priority: 790,
+      //   body: [MOVE, WORK, CARRY, CARRY]
+      // },
       { // BIG UP-GRADER
         role: 'upgrader',
         quantity: 1,
@@ -55,7 +56,7 @@ var functionCreepRespawner = {
         role: 'claimer',
         quantity: 1,
         priority: 600,
-        body: [MOVE, CLAIM]
+        body: [MOVE, CLAIM] // COST 650
       },
       //TODO: add defence attacker
     ];
@@ -81,7 +82,11 @@ var functionCreepRespawner = {
       if (!creepBodyCheck) {
         var newCreepName = (creepSpawnConfig.role.charAt(0).toUpperCase() + creepSpawnConfig.role.slice(1)) + '_' + Game.time;
 
-        console.log('Spawning new ' + creepSpawnConfig.role + ': ' + newCreepName);
+        if (debug) {
+          console.log('Spawning new ' + creepSpawnConfig.role + ': ' + newCreepName);
+        }
+
+        //TODO: add code to only try and spawn creep when there is enough energy.
         Game.spawns['Spawn1'].spawnCreep(creepSpawnConfig.body, newCreepName, {
           memory: {
             role: creepSpawnConfig.role,
@@ -95,7 +100,7 @@ var functionCreepRespawner = {
     if (Game.spawns['Spawn1'].spawning) {
       var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];
 
-      Game.spawns['Spawn1'].room.visual.text('🛠️' + spawningCreep.memory.role, Game.spawns['Spawn1'].pos.x + 1, Game.spawns['Spawn1'].pos.y, {align: 'left', opacity: 0.8});
+      Game.spawns['Spawn1'].room.visual.text('🛠️ ' + spawningCreep.memory.role, Game.spawns['Spawn1'].pos.x + 1, Game.spawns['Spawn1'].pos.y, {align: 'left', opacity: 0.8});
     }
   }
 };

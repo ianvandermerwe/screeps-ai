@@ -3,10 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="1b1f7133-a4cd-4e64-8d96-1827d70dfca5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/defence.tower.js" beforeDir="false" afterPath="$PROJECT_DIR$/defence.tower.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/function.creep.respawner.js" beforeDir="false" afterPath="$PROJECT_DIR$/function.creep.respawner.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/function.memory.cleanup.js" beforeDir="false" afterPath="$PROJECT_DIR$/function.memory.cleanup.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/role.builder.js" beforeDir="false" afterPath="$PROJECT_DIR$/role.builder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/role.claimer.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/role.harvester.js" beforeDir="false" afterPath="$PROJECT_DIR$/role.harvester.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/role.upgrader.js" beforeDir="false" afterPath="$PROJECT_DIR$/role.upgrader.js" afterDir="false" />
     </list>
@@ -49,7 +50,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ScreepsAutocomplete" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -60,6 +61,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ScreepsAutocomplete" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -79,7 +81,7 @@
       <option name="presentableId" value="Default" />
       <updated>1588763771762</updated>
       <workItem from="1588763773432" duration="6473000" />
-      <workItem from="1588774558277" duration="25061000" />
+      <workItem from="1588774558277" duration="37146000" />
     </task>
     <servers />
   </component>
@@ -91,5 +93,17 @@
       <screen x="2733" y="-1057" width="1920" height="1057" />
     </state>
     <state x="3202" y="-890" key="SettingsEditor/813.-1057.1920.1057/2733.-1057.1920.1057/0.23.1680.1027@2733.-1057.1920.1057" timestamp="1588765024162" />
+    <state x="3348" y="-907" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1588950691415">
+      <screen x="2733" y="-1057" width="1920" height="1057" />
+    </state>
+    <state x="3348" y="-907" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/813.-1057.1920.1057/2733.-1057.1920.1057/0.23.1680.1027@2733.-1057.1920.1057" timestamp="1588950691415" />
+    <state x="3359" y="-772" width="694" height="486" key="find.popup" timestamp="1588941769456">
+      <screen x="2733" y="-1057" width="1920" height="1057" />
+    </state>
+    <state x="3359" y="-772" width="694" height="486" key="find.popup/813.-1057.1920.1057/2733.-1057.1920.1057/0.23.1680.1027@2733.-1057.1920.1057" timestamp="1588941769456" />
+    <state x="3358" y="-822" width="670" height="676" key="search.everywhere.popup" timestamp="1588930780207">
+      <screen x="2733" y="-1057" width="1920" height="1057" />
+    </state>
+    <state x="3358" y="-822" width="670" height="676" key="search.everywhere.popup/813.-1057.1920.1057/2733.-1057.1920.1057/0.23.1680.1027@2733.-1057.1920.1057" timestamp="1588930780207" />
   </component>
 </project>
