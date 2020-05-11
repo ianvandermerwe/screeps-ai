@@ -1,7 +1,7 @@
 var functionCreepRespawner = {
   run: function () {
 
-    var debug = false;
+    var debug = true;
     /*
     --- CONSTANTS ---
       MOVE:           50
@@ -18,83 +18,146 @@ var functionCreepRespawner = {
     var creepSpawnConfigs = [
       { // NORMAL HARVESTER
         role: 'harvester',
-        quantity: 2,
+        quantity: 6,
         priority: 1000,
-        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE]
+        // body: 'WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE',
+        body: {CARRY: 50, WORK: 30, MOVE: 20},
+        spawnIfEnemies: false
       },
-      { // BIG HARVESTER
-        role: 'harvester',
-        quantity: 5,
-        priority: 990,
-        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE] // COST 450
-      },
-      { // NORMAL BUILDER
-        role: 'builder',
-        quantity: 2,
-        priority: 900,
-        body: [WORK, CARRY, CARRY, CARRY, MOVE]
-      },
-      { // NORMAL UP-GRADER
-        role: 'upgrader',
-        quantity: 2,
-        priority: 800,
-        body: [WORK, WORK, CARRY, MOVE]
-      },
+      // { // NORMAL BUILDER
+      //   role: 'builder',
+      //   quantity: 2,
+      //   priority: 900,
+      //   body: [WORK, CARRY, CARRY, CARRY, MOVE],
+      //   spawnIfEnemies: false
+      // },
+      // { // NORMAL UP-GRADER
+      //   role: 'upgrader',
+      //   quantity: 3,
+      //   priority: 800,
+      //   body: [WORK, WORK, CARRY, MOVE],
+      //   spawnIfEnemies: false
+      // },
+      // { // ATTACKER
+      //   role: 'attacker',
+      //   quantity: 1,
+      //   priority: 800,
+      //   body: [MOVE, ATTACK, ATTACK, ATTACK],
+      //   spawnIfEnemies: true
+      // },
+      // { // HEALER
+      //   role: 'healer',
+      //   quantity: 2,
+      //   priority: 790,
+      //   body: [MOVE, HEAL],
+      //   spawnIfEnemies: true
+      // },
       // { // NORMAL REPAIRER
       //   role: 'repairer',
       //   quantity: 2,
-      //   priority: 790,
-      //   body: [MOVE, WORK, CARRY, CARRY]
+      //   priority: 750,
+      //   body: [MOVE, WORK, CARRY, CARRY],
+      //   spawnIfEnemies: true
       // },
-      { // BIG UP-GRADER
-        role: 'upgrader',
-        quantity: 1,
-        priority: 700,
-        body: [MOVE, MOVE, MOVE, WORK, WORK, CARRY, CARRY, CARRY, CARRY]
-      },
-      { // CLAIMER
-        role: 'claimer',
-        quantity: 1,
-        priority: 600,
-        body: [MOVE, CLAIM] // COST 650
-      },
-      //TODO: add defence attacker
+      // { // CLAIMER
+      //   role: 'claimer',
+      //   quantity: 1,
+      //   priority: 600,
+      //   body: [MOVE, CLAIM], // COST 650
+      //   spawnIfEnemies: false
+      // },
     ];
 
-    creepSpawnConfigs.forEach(function (creepSpawnConfig) {
-      var creeps = _.filter(Game.creeps, (creep) => creep.memory.role === creepSpawnConfig.role);
-      var creepBodyCheck = false;
-      var creepQuantity = 0;
-
-      creeps.forEach(function (creep) {
-        if (JSON.stringify(creep.memory.body) === JSON.stringify(creepSpawnConfig.body)) {
-          creepQuantity++;
-          // creepBodyCheck = true;
+    for (var spawn in Game.spawns) {
+      let spawnObj = Game.spawns[spawn];
+      let extentions = spawnObj.room.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+          return (structure.structureType == STRUCTURE_EXTENSION);
         }
       });
 
-      // TODO: add code to allow for priority of creep spawning.
-      if (creepQuantity === creepSpawnConfig.quantity) {
-        creepBodyCheck = true;
-        // console.log(creepBodyCheck, creepQuantity, creepSpawnConfig.quantity);
+      let totalEnergy = spawnObj.store.getUsedCapacity(RESOURCE_ENERGY);
+      if (extentions.length > 0) {
+        for (var extention in extentions) {
+          totalEnergy = totalEnergy + extention.store.getUsedCapacity(RESOURCE_ENERGY);
+        }
       }
 
-      if (!creepBodyCheck) {
-        var newCreepName = (creepSpawnConfig.role.charAt(0).toUpperCase() + creepSpawnConfig.role.slice(1)) + '_' + Game.time;
+      creepSpawnConfigs.forEach(function (creepSpawnConfig) {
+        var creeps = _.filter(spawnObj.room.creeps, (creep) => creep.memory.role === creepSpawnConfig.role);
+        var shouldSpawnMore = true;
+        var creepQuantity = 0;
 
-        if (debug) {
-          console.log('Spawning new ' + creepSpawnConfig.role + ': ' + newCreepName);
-        }
 
-        //TODO: add code to only try and spawn creep when there is enough energy.
-        Game.spawns['Spawn1'].spawnCreep(creepSpawnConfig.body, newCreepName, {
-          memory: {
-            role: creepSpawnConfig.role,
-            body: creepSpawnConfig.body
+        creeps.forEach(function (creep) { // COUNTING CREEPS OF SAME TYPE
+          if (JSON.stringify(creep.memory.body) === JSON.stringify(creepSpawnConfig.body)) {
+            creepQuantity++;
           }
         });
-      }
-    });
+
+        // TODO: add code to allow for priority of creep spawning.
+        if (creepQuantity === creepSpawnConfig.quantity) {
+          shouldSpawnMore = false;
+        }
+
+        if (shouldSpawnMore) {
+          var newCreepName = (creepSpawnConfig.role.charAt(0).toUpperCase() + creepSpawnConfig.role.slice(1)) + '_' + Game.time;
+
+          if (debug) {
+            console.log('Spawning new ' + creepSpawnConfig.role + ': ' + newCreepName);
+          }
+
+          const cost = creepSpawnConfig.body.map((_) => BODYPART_COST[_]).reduce((acc, val) => acc + val, 0);
+          console.log(cost,totalEnergy);
+
+          spawnObj.spawnCreep(creepSpawnConfig.body, newCreepName, {
+            memory: {
+              role: creepSpawnConfig.role,
+              body: creepSpawnConfig.body
+            }
+          });
+          // Game.spawns['Spawn1'].spawnCreep(creepSpawnConfig.body, newCreepName, {
+          //   memory: {
+          //     role: creepSpawnConfig.role,
+          //     body: creepSpawnConfig.body
+          //   }
+          // });
+        }
+      });
+    }
+
+    // creepSpawnConfigs.forEach(function (creepSpawnConfig) {
+    //   var creeps = _.filter(Game.creeps, (creep) => creep.memory.role === creepSpawnConfig.role);
+    //   var creepBodyCheck = false;
+    //   var creepQuantity = 0;
+
+    // creeps.forEach(function (creep) {
+    //   if (JSON.stringify(creep.memory.body) === JSON.stringify(creepSpawnConfig.body)) {
+    //     creepQuantity++;
+    //     // creepBodyCheck = true;
+    //   }
+    // });
+
+    // if (creepQuantity === creepSpawnConfig.quantity) {
+    //   creepBodyCheck = true;
+    //   // console.log(creepBodyCheck, creepQuantity, creepSpawnConfig.quantity);
+    // }
+
+    // if (!creepBodyCheck) {
+    //   var newCreepName = (creepSpawnConfig.role.charAt(0).toUpperCase() + creepSpawnConfig.role.slice(1)) + '_' + Game.time;
+    //
+    //   if (debug) {
+    //     console.log('Spawning new ' + creepSpawnConfig.role + ': ' + newCreepName);
+    //   }
+    //
+    //   Game.spawns['Spawn1'].spawnCreep(creepSpawnConfig.body, newCreepName, {
+    //     memory: {
+    //       role: creepSpawnConfig.role,
+    //       body: creepSpawnConfig.body
+    //     }
+    //   });
+    // }
+    // });
 
     // Spawning notification
     if (Game.spawns['Spawn1'].spawning) {
