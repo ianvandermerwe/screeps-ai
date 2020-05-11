@@ -36,8 +36,8 @@ var roleBuilder = {
     // }
 
     if (creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && !creep.memory.building) {
-      if (creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[1], {visualizePathStyle: {stroke: '#ffaa00'}});
+      if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
       }
     } else {
       if (creep.memory.building) {

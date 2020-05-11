@@ -16,17 +16,17 @@ var functionCreepRespawner = {
 
     //TODO: create tiered system to scale workers depending the stored energy + extentions.
     var creepSpawnConfigs = [
-      // { // NORMAL HARVESTER
-      //   role: 'harvester',
-      //   quantity: 1,
-      //   priority: 1000,
-      //   body: [WORK, WORK, CARRY, CARRY, MOVE]
-      // },
+      { // NORMAL HARVESTER
+        role: 'harvester',
+        quantity: 2,
+        priority: 1000,
+        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE]
+      },
       { // BIG HARVESTER
         role: 'harvester',
         quantity: 5,
         priority: 990,
-        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
+        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE] // COST 450
       },
       { // NORMAL BUILDER
         role: 'builder',
