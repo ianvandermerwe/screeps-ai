@@ -62,6 +62,9 @@ var utilSources = {
 
       // TODO: return source if closest and is open and has energy. Else goto other room and find source.
       // console.log(source.id, 'spots - ' + mineAbleSpots,'has energy - ' + hasEnergy);
+      // if(mineAbleSpots > 0){
+      //   return source;
+      // }
     });
 
     return sources[0];
