@@ -24,20 +24,20 @@ var functionCreepRespawner = {
         bodyObj: {CARRY: 50, WORK: 30, MOVE: 20},
         spawnIfEnemies: false
       },
-      // { // NORMAL BUILDER
-      //   role: 'builder',
-      //   quantity: 2,
-      //   priority: 900,
-      //   body: [WORK, CARRY, CARRY, CARRY, MOVE],
-      //   spawnIfEnemies: false
-      // },
-      // { // NORMAL UP-GRADER
-      //   role: 'upgrader',
-      //   quantity: 2,
-      //   priority: 800,
-      //   body: [WORK, WORK, CARRY, MOVE],
-      //   spawnIfEnemies: false
-      // },
+      { // NORMAL BUILDER
+        role: 'builder',
+        quantity: 2,
+        priority: 900,
+        body: [WORK, CARRY, CARRY, CARRY, MOVE],
+        spawnIfEnemies: false
+      },
+      { // NORMAL UP-GRADER
+        role: 'upgrader',
+        quantity: 2,
+        priority: 800,
+        body: [WORK, WORK, CARRY, MOVE],
+        spawnIfEnemies: false
+      },
       // { // ATTACKER
       //   role: 'attacker',
       //   quantity: 1,
