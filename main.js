@@ -1,17 +1,18 @@
-var memoryCleanup = require('function.memory.cleanup');
-var functionCreepRespawner = require('function.creep.respawner');
-var functionFlagManager = require('function.flag.manager');
+let memoryCleanup = require('function.memory.cleanup');
+let functionCreepRespawner = require('function.creep.respawner');
+let functionFlagManager = require('function.flag.manager');
 
-var roleHarvester = require('role.harvester');
-var roleMiner = require('role.miner');
-var roleTransporter = require('role.transporter');
-var roleUpgrader = require('role.upgrader');
-var roleBuilder = require('role.builder');
-var roleRepairer = require('role.repairer');
-var roleDefender = require('role.defender');
-var roleFlagClaimer = require('role.flag.claimer');
+let defenceTower = require('defence.tower');
 
-var defenceTower = require('defence.tower');
+let roleHarvester = require('role.harvester');
+let roleMiner = require('role.miner');
+let roleTransporter = require('role.transporter');
+let roleUpgrader = require('role.upgrader');
+let roleBuilder = require('role.builder');
+let roleRepairer = require('role.repairer');
+let roleDefender = require('role.defender');
+let roleFlagClaimer = require('role.flag.claimer');
+let roleFlagAttacker = require('role.flag.attacker');
 
 module.exports.loop = function () {
   functionCreepRespawner.run();
@@ -38,6 +39,8 @@ module.exports.loop = function () {
         roleRepairer.run(creep);
       } else if (creep.memory.role == 'claimer') {
         roleFlagClaimer.run(creep);
+      } else if (creep.memory.role == 'attacker') {
+        roleFlagAttacker.run(creep);
       }
     }
   }
@@ -46,8 +49,8 @@ module.exports.loop = function () {
     let room = Game.rooms[roomHash];
     var hostiles = room.find(FIND_HOSTILE_CREEPS);
     if (hostiles.length > 0) {
-      var username = hostiles[0].owner.username;
-      Game.notify(`User ${username} spotted in room ${room.name}`);
+      // var username = hostiles[0].owner.username;
+      // Game.notify(`User ${username} spotted in room ${room.name}`);
 
       var towers = room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
 

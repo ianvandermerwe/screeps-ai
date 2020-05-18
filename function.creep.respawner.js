@@ -18,7 +18,6 @@ var functionCreepRespawner = {
       { // MINER
         role: 'miner',
         quantity: 2,
-        priority: 10000,
         body: [
           {bodyPart: WORK, percent: 90},
           {bodyPart: MOVE, percent: 10},
@@ -28,7 +27,6 @@ var functionCreepRespawner = {
       { // TRANSPORTER
         role: 'transporter',
         quantity: 2,
-        priority: 9900,
         body: [
           {bodyPart: CARRY, percent: 50},
           {bodyPart: MOVE, percent: 50},
@@ -39,7 +37,6 @@ var functionCreepRespawner = {
       { // BUILDER
         role: 'builder',
         quantity: 2,
-        priority: 9000,
         body: [
           {bodyPart: CARRY, percent: 35},
           {bodyPart: WORK, percent: 35},
@@ -50,7 +47,6 @@ var functionCreepRespawner = {
       { // UP-GRADER
         role: 'upgrader',
         quantity: 2,
-        priority: 8000,
         body: [
           {bodyPart: WORK, percent: 50},
           {bodyPart: CARRY, percent: 25},
@@ -58,32 +54,9 @@ var functionCreepRespawner = {
         ],
         spawnIfEnemies: false
       },
-
-      // { // ATTACKER
-      //   role: 'attacker',
-      //   quantity: 1,
-      //   priority: 7000,
-      //   body: [
-      //     {bodyPart: ATTACK, percent: 50},
-      //     {bodyPart: TOUGH, percent: 10},
-      //     {bodyPart: MOVE, percent: 40},
-      //   ],
-      //   spawnIfEnemies: true
-      // },
-      // { // HEALER
-      //   role: 'healer',
-      //   quantity: 2,
-      //   priority: 6000,
-      //   body: [
-      //     {bodyPart: HEAL, percent: 50},
-      //     {bodyPart: MOVE, percent: 50},
-      //   ],
-      //   spawnIfEnemies: true
-      // },
       { // REPAIRER
         role: 'repairer',
         quantity: 1,
-        priority: 5000,
         body: [
           {bodyPart: CARRY, percent: 30},
           {bodyPart: WORK, percent: 40},
@@ -91,13 +64,39 @@ var functionCreepRespawner = {
         ],
         spawnIfEnemies: true
       },
-      // { // CLAIMER
-      //   role: 'claimer',
-      //   quantity: 1,
-      //   priority: 600,
-      //   body: [MOVE, CLAIM], // COST 650
-      //   spawnIfEnemies: false
-      // },
+    ];
+
+    let defenciveAndOffensiveCreeps = [
+      { // ATTACKER
+        role: 'attacker',
+        quantity: 1,
+        body: [
+          {bodyPart: ATTACK, percent: 50},
+          {bodyPart: TOUGH, percent: 1},
+          {bodyPart: MOVE, percent: 49},
+        ],
+        spawnIfEnemies: true
+      },
+
+      { // HEALER
+        role: 'healer',
+        quantity: 2,
+        body: [
+          {bodyPart: HEAL, percent: 50},
+          {bodyPart: MOVE, percent: 50},
+        ],
+        spawnIfEnemies: true
+      },
+
+      { // CLAIMER
+        role: 'claimer',
+        quantity: 1,
+        body: [
+          {bodyPart: CLAIM, percent: 50},
+          {bodyPart: MOVE, percent: 50},
+        ],
+        spawnIfEnemies: false
+      },
     ];
 
     for (var spawn in Game.spawns) {

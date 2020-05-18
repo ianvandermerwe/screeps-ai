@@ -1,8 +1,5 @@
 var functionFlagManager = {
   run: function () {
-
-
-
     if (false) {
       let desiredMinions = 0;
       let currentMinions = 0;
@@ -26,7 +23,6 @@ var functionFlagManager = {
       if (SHOW_FLAG_INFO) {
         // Show.assignedMinions(flag, desiredMinions, currentMinions);
       }
-
 
       if (currentMinions < desiredMinions) {
 
