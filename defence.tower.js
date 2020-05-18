@@ -5,7 +5,10 @@ var defenceTower = {
     if (tower) {
       var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
       if (closestHostile) {
-        tower.attack(closestHostile);
+        let attackResponse = tower.attack(closestHostile);
+        if (attackResponse === ERR_NOT_ENOUGH_RESOURCES) {
+
+        }
       } else {
         //TODO: write code to only repair if spawn and extentions are fully recharged.
 

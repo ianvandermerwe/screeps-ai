@@ -14,74 +14,91 @@ var functionCreepRespawner = {
       CLAIM :         600
      */
 
-    //TODO: create tiered system to scale workers depending the stored energy + extentions.
     var creepSpawnConfigs = [
-        { // NORMAL HARVESTER
-          role: 'harvester',
-          quantity: 4,
-          priority: 1000,
-          body: [WORK, CARRY, CARRY, CARRY, MOVE],
-          bodyObj: [
-            {bodyPart: CARRY, percent: 50},
-            {bodyPart: WORK, percent: 30},
-            {bodyPart: MOVE, percent: 20},
-          ],
-          spawnIfEnemies: false
-        },
-        // { // NORMAL BUILDER
-        //   role: 'builder',
-        //   quantity: 2,
-        //   priority: 900,
-        //   body: [WORK, CARRY, CARRY, CARRY, MOVE],
-        //   bodyObj: [
-        //     {bodyPart: CARRY, percent: 40},
-        //     {bodyPart: WORK, percent: 40},
-        //     {bodyPart: MOVE, percent: 20},
-        //   ],
-        //   spawnIfEnemies: false
-        // },
-        // { // NORMAL UP-GRADER
-        //   role: 'upgrader',
-        //   quantity: 2,
-        //   priority: 800,
-        //   body: [WORK, WORK, CARRY, MOVE],
-        //   bodyObj: [
-        //     {bodyPart: WORK, percent: 50},
-        //     {bodyPart: CARRY, percent: 25},
-        //     {bodyPart: MOVE, percent: 25},
-        //   ],
-        //   spawnIfEnemies: false
-        // },
-        // { // ATTACKER
-        //   role: 'attacker',
-        //   quantity: 1,
-        //   priority: 800,
-        //   body: [MOVE, ATTACK, ATTACK, ATTACK],
-        //   spawnIfEnemies: true
-        // },
-        // { // HEALER
-        //   role: 'healer',
-        //   quantity: 2,
-        //   priority: 790,
-        //   body: [MOVE, HEAL],
-        //   spawnIfEnemies: true
-        // },
-        // { // NORMAL REPAIRER
-        //   role: 'repairer',
-        //   quantity: 1,
-        //   priority: 750,
-        //   body: [MOVE, WORK, CARRY, CARRY],
-        //   spawnIfEnemies: true
-        // },
-        // { // CLAIMER
-        //   role: 'claimer',
-        //   quantity: 1,
-        //   priority: 600,
-        //   body: [MOVE, CLAIM], // COST 650
-        //   spawnIfEnemies: false
-        // },
-      ]
-    ;
+      { // MINER
+        role: 'miner',
+        quantity: 2,
+        priority: 10000,
+        body: [
+          {bodyPart: WORK, percent: 90},
+          {bodyPart: MOVE, percent: 10},
+        ],
+        spawnIfEnemies: false
+      },
+      { // TRANSPORTER
+        role: 'transporter',
+        quantity: 2,
+        priority: 9900,
+        body: [
+          {bodyPart: CARRY, percent: 50},
+          {bodyPart: MOVE, percent: 50},
+        ],
+        spawnIfEnemies: false
+      },
+
+      { // BUILDER
+        role: 'builder',
+        quantity: 2,
+        priority: 9000,
+        body: [
+          {bodyPart: CARRY, percent: 35},
+          {bodyPart: WORK, percent: 35},
+          {bodyPart: MOVE, percent: 35},
+        ],
+        spawnIfEnemies: false
+      },
+      { // UP-GRADER
+        role: 'upgrader',
+        quantity: 2,
+        priority: 8000,
+        body: [
+          {bodyPart: WORK, percent: 50},
+          {bodyPart: CARRY, percent: 25},
+          {bodyPart: MOVE, percent: 25},
+        ],
+        spawnIfEnemies: false
+      },
+
+      // { // ATTACKER
+      //   role: 'attacker',
+      //   quantity: 1,
+      //   priority: 7000,
+      //   body: [
+      //     {bodyPart: ATTACK, percent: 50},
+      //     {bodyPart: TOUGH, percent: 10},
+      //     {bodyPart: MOVE, percent: 40},
+      //   ],
+      //   spawnIfEnemies: true
+      // },
+      // { // HEALER
+      //   role: 'healer',
+      //   quantity: 2,
+      //   priority: 6000,
+      //   body: [
+      //     {bodyPart: HEAL, percent: 50},
+      //     {bodyPart: MOVE, percent: 50},
+      //   ],
+      //   spawnIfEnemies: true
+      // },
+      { // REPAIRER
+        role: 'repairer',
+        quantity: 1,
+        priority: 5000,
+        body: [
+          {bodyPart: CARRY, percent: 30},
+          {bodyPart: WORK, percent: 40},
+          {bodyPart: MOVE, percent: 30},
+        ],
+        spawnIfEnemies: true
+      },
+      // { // CLAIMER
+      //   role: 'claimer',
+      //   quantity: 1,
+      //   priority: 600,
+      //   body: [MOVE, CLAIM], // COST 650
+      //   spawnIfEnemies: false
+      // },
+    ];
 
     for (var spawn in Game.spawns) {
       let spawnObj = Game.spawns[spawn];
@@ -106,24 +123,40 @@ var functionCreepRespawner = {
         }
       }
 
-      if (totalEnergyAvailable < totalEnergy) return;
+      // THIS IS A OVERRIDE TO ENSURE ROOM DONT GRIND TO AN HALT.
+      let minerCheck = _.filter(spawnObj.room.find(FIND_MY_CREEPS), (creep) => creep.memory.role === 'miner');
+      let transporterCheck = _.filter(spawnObj.room.find(FIND_MY_CREEPS), (creep) => creep.memory.role === 'transporter');
 
-      creepSpawnConfigs.forEach(function (creepSpawnConfig) {
-        let creeps = _.filter(spawnObj.room.find(FIND_CREEPS), (creep) => creep.memory.role === creepSpawnConfig.role);
+      if ((minerCheck.length < 1) && (totalEnergyAvailable > 260)) {
+        spawnObj.spawnCreep([WORK, WORK, MOVE], 'Miner', {memory: {role: 'miner'}})
+
+      } else if ((transporterCheck.length < 1) && (totalEnergyAvailable > 260)) {
+        spawnObj.spawnCreep([WORK, WORK, MOVE], 'Transporter', {memory: {role: 'transporter'}})
+      } else if (totalEnergyAvailable < totalEnergy) {
+        return;
+      }
+
+      for (let iteration = 0; iteration < creepSpawnConfigs.length;) {
+        // creepSpawnConfigs.forEach(function (creepSpawnConfig) {
+        let creeps = _.filter(spawnObj.room.find(FIND_MY_CREEPS), (creep) => creep.memory.role === creepSpawnConfigs[iteration].role);
         // Rooms can only spawn creeps with a max of 50, so this is our upper limit
         let maxBodyParts = 50;
 
-        // TODO: add code to allow for priority of creep spawning.
-
-        // Check if there there are less than the required amount of creeps in this room.
         // TODO: possibly add code to check the room of the creep and where he is located.
 
-        if (creeps.length <= creepSpawnConfig.quantity) {
+        // TODO: add check to see if there are any enemy creeps in this room.
+
+        if (creeps.length < creepSpawnConfigs[iteration].quantity) {
+
+          // if (!previousCreepQuantityMax && previousPriority > creepSpawnConfig.priority) return; // CONTINUE BECAUSE THE PREVIOUS CREEP TYPE OF HIGHER PRIORITY AND IS NOT FULL.
 
           // THIS WORKS OUT HOW MANY BODY PARTS THIS CREEP TYPE CAN HAVE WITH THE BASE RESOURCES.
           let creepBody = [];
-          for (let bodyPartConfig of Object.entries(creepSpawnConfig.bodyObj)) { // THIS BUILDS THE CREEP BODY
-            let bodyPartAmount = Math.floor((totalEnergy / BODYPART_COST[bodyPartConfig[1].bodyPart]) * (bodyPartConfig[1].percent / 100));
+          let creepBodyCheck = [];
+          let costCheck = 0;
+          let cost = 0;
+          for (let bodyPartConfig of Object.entries(creepSpawnConfigs[iteration].body)) { // THIS BUILDS THE CREEP BODY
+            let bodyPartAmount = Math.floor((totalEnergyAvailable / BODYPART_COST[bodyPartConfig[1].bodyPart]) * (bodyPartConfig[1].percent / 100));
 
             for (let i = 0; i < bodyPartAmount; i++) {
               // PUSH THE REQUIRED AMOUNT OF BODY PARTS ONTO BODY.
@@ -155,31 +188,50 @@ var functionCreepRespawner = {
                   break;
               }
 
-              if (creepBody.length < maxBodyParts) {
-                creepBody.push(tmp);
+              if (creepBody.length <= maxBodyParts) {
+                creepBodyCheck.push(tmp);
+                costCheck = creepBodyCheck.map((_) => BODYPART_COST[_]).reduce((acc, val) => acc + val, 0);
+
+                if (costCheck < totalEnergyAvailable) {
+                  creepBody = creepBodyCheck;
+                  cost = creepBody.map((_) => BODYPART_COST[_]).reduce((acc, val) => acc + val, 0);
+                }
               }
             }
           }
 
-          const cost = creepBody.map((_) => BODYPART_COST[_]).reduce((acc, val) => acc + val, 0);
-
-          if (cost <= totalEnergy) { // SPAWN CREEP IF BASE HAS ENERGY
-            let newCreepName = (creepSpawnConfig.role.charAt(0).toUpperCase() + creepSpawnConfig.role.slice(1)) + '_' + spawnObj.room.name + '_' + Game.time;
+          if (cost <= totalEnergyAvailable) { // SPAWN CREEP IF BASE HAS ENERGY
+            let newCreepName = (creepSpawnConfigs[iteration].role.charAt(0).toUpperCase() + creepSpawnConfigs[iteration].role.slice(1)) + '_' + spawnObj.room.name + '_' + Game.time;
 
             if (debug) {
-              console.log('Spawning new ' + creepSpawnConfig.role + ': ' + newCreepName);
+              console.log('Cost - ', cost, 'Available - ', totalEnergyAvailable, 'Total - ', totalEnergy, ':', newCreepName, creepBody);
             }
 
             //SPAWN CREEP
-            spawnObj.spawnCreep(creepBody, newCreepName, {
+            var returnCode = spawnObj.spawnCreep(creepBody, newCreepName, {
               memory: {
-                role: creepSpawnConfig.role,
+                role: creepSpawnConfigs[iteration].role,
                 working: false
               }
             });
+
+            if (debug) {
+              // console.log('Spawning new ' + creepSpawnConfigs[iteration].role + ': ' + newCreepName);
+              // console.log('Spawn return ' + returnCode);
+            }
+
+            //MANUAL CONSOLE SPAWN ACTION
+            // Game.spawns['Spawn1'].spawnCreep([CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,WORK,WORK,WORK,MOVE,MOVE,MOVE,MOVE],'Harvester',{memory:{role:'harvester'}})
+            // Game.spawns['Spawn1'].spawnCreep([WORK,WORK,MOVE],'Miner',{memory:{role:'miner'}})
+            // Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE],'Upgrader',{memory:{role:'upgrader'}})
           }
+
+          return;
+        } else {
+          iteration++;
         }
-      });
+      }
+      // });
 
       // Spawning notification
       if (spawnObj.spawning) {
