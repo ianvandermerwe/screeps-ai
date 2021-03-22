@@ -7,9 +7,10 @@ var utilCreep = {
   },
 
   checkWorkingAction: function (creep) {
-    let freeCapacity = creep.store.getFreeCapacity(RESOURCE_ENERGY);
+    // let freeCapacity = creep.store.getFreeCapacity(RESOURCE_ENERGY);
+    let usedCapacity = creep.store.getUsedCapacity(RESOURCE_ENERGY);
 
-    return creep.memory.working && freeCapacity === 0
+    return creep.memory.working && usedCapacity === 0
   },
 
   fetchEnergy: function (creep) {
@@ -18,7 +19,7 @@ var utilCreep = {
     var container = creep.room.find(FIND_STRUCTURES, {
       filter: (structure) => {
         return (structure.structureType === STRUCTURE_CONTAINER) &&
-          structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
+          structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0
       }
     });
 

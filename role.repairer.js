@@ -29,6 +29,7 @@ var roleRepairer = {
               structure.structureType === STRUCTURE_TOWER ||
               structure.structureType === STRUCTURE_STORAGE ||
               structure.structureType === STRUCTURE_ROAD ||
+              structure.structureType === STRUCTURE_RAMPART ||
               structure.structureType === STRUCTURE_WALL
             ) &&
             structure.hits < structure.hitsMax;

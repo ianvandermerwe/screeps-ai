@@ -1,4 +1,4 @@
-var functionCreepRespawner = {
+var functionCreepSpawner = {
   run: function () {
 
     var debug = true;
@@ -19,10 +19,10 @@ var functionCreepRespawner = {
         role: 'miner',
         quantity: 2,
         body: [
-          {bodyPart: WORK, percent: 80},
-          {bodyPart: MOVE, percent: 20},
+          {bodyPart: WORK, percent: 90},
+          {bodyPart: MOVE, percent: 10},
         ],
-        bodyLimit: 11,
+        bodyLimit: 20,
         spawnIfEnemies: false
       },
       { // TRANSPORTER
@@ -32,7 +32,18 @@ var functionCreepRespawner = {
           {bodyPart: CARRY, percent: 50},
           {bodyPart: MOVE, percent: 50},
         ],
-        bodyLimit: 11,
+        bodyLimit: 20,
+        spawnIfEnemies: false
+      },
+
+      { // BUILDER
+        role: 'builder',
+        quantity: 2,
+        body: [
+          {bodyPart: CARRY, percent: 35},
+          {bodyPart: WORK, percent: 35},
+          {bodyPart: MOVE, percent: 35},
+        ],
         spawnIfEnemies: false
       },
       { // UP-GRADER
@@ -43,18 +54,6 @@ var functionCreepRespawner = {
           {bodyPart: CARRY, percent: 25},
           {bodyPart: MOVE, percent: 25},
         ],
-        bodyLimit: 11,
-        spawnIfEnemies: false
-      },
-      { // BUILDER
-        role: 'builder',
-        quantity: 3,
-        body: [
-          {bodyPart: CARRY, percent: 40},
-          {bodyPart: WORK, percent: 40},
-          {bodyPart: MOVE, percent: 20},
-        ],
-        bodyLimit: 11,
         spawnIfEnemies: false
       },
       { // REPAIRER
@@ -65,7 +64,6 @@ var functionCreepRespawner = {
           {bodyPart: WORK, percent: 40},
           {bodyPart: MOVE, percent: 30},
         ],
-        bodyLimit: 11,
         spawnIfEnemies: true
       },
     ];
@@ -110,7 +108,7 @@ var functionCreepRespawner = {
       if (spawnObj.spawning) return;
 
       // Calculate total energy in room.
-      let extensions = spawnObj.room.find(FIND_STRUCTURES, {
+      let extentions = spawnObj.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
           return (structure.structureType == STRUCTURE_EXTENSION);
         }
@@ -119,10 +117,10 @@ var functionCreepRespawner = {
       let totalEnergyAvailable = spawnObj.store.getUsedCapacity(RESOURCE_ENERGY);
       let totalEnergy = spawnObj.store.getCapacity(RESOURCE_ENERGY);
 
-      if (extensions.length > 0) {
-        for (var extension in extensions) {
-          totalEnergyAvailable = totalEnergyAvailable + extensions[extension].store.getUsedCapacity(RESOURCE_ENERGY);
-          totalEnergy = totalEnergy + extensions[extension].store.getCapacity(RESOURCE_ENERGY);
+      if (extentions.length > 0) {
+        for (var extention in extentions) {
+          totalEnergyAvailable = totalEnergyAvailable + extentions[extention].store.getUsedCapacity(RESOURCE_ENERGY);
+          totalEnergy = totalEnergy + extentions[extention].store.getCapacity(RESOURCE_ENERGY);
         }
       }
 
@@ -133,10 +131,11 @@ var functionCreepRespawner = {
       if ((minerCheck.length < 1) && (totalEnergyAvailable > 260)) {
         spawnObj.spawnCreep([WORK, WORK, MOVE], 'Miner', {memory: {role: 'miner'}})
       } else if ((transporterCheck.length < 1) && (totalEnergyAvailable > 260)) {
-        spawnObj.spawnCreep([CARRY, CARRY, CARRY, MOVE, MOVE], 'Transporter', {memory: {role: 'transporter'}})
-      } else if (totalEnergyAvailable < totalEnergy) {
-        return;
+        spawnObj.spawnCreep([WORK, WORK, MOVE], 'Transporter', {memory: {role: 'transporter'}})
       }
+      // else if (totalEnergyAvailable < totalEnergy) {
+      //   return;
+      // }
 
       for (let iteration = 0; iteration < creepSpawnConfigs.length;) {
         // creepSpawnConfigs.forEach(function (creepSpawnConfig) {
@@ -226,6 +225,7 @@ var functionCreepRespawner = {
             // Game.spawns['Spawn1'].spawnCreep([CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,WORK,WORK,WORK,MOVE,MOVE,MOVE,MOVE],'Harvester',{memory:{role:'harvester'}})
             // Game.spawns['Spawn1'].spawnCreep([WORK,WORK,MOVE],'Miner',{memory:{role:'miner'}})
             // Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE],'Upgrader',{memory:{role:'upgrader'}})
+            // Game.spawns['Spawn1'].spawnCreep([WORK,WORK,MOVE,CARRY,CARRY],'Builder',{memory:{role:'builder'}})
           }
 
           return;
@@ -245,4 +245,4 @@ var functionCreepRespawner = {
   }
 };
 
-module.exports = functionCreepRespawner;
+module.exports = functionCreepSpawner;

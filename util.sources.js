@@ -21,12 +21,12 @@ var utilSources = {
     });
 
     if (compareMiner !== null) {
-      if (compareMiner.age < currentCreepAge[2]) {
+      if (compareMiner.age > currentCreepAge[2]) {
         return sources[0];
       } else {
         return sources[1];
       }
-    }else{
+    } else {
       return sources[0];
     }
 
