@@ -1,7 +1,7 @@
 var functionCreepRespawner = {
   run: function () {
 
-    var debug = true;
+    var debug = true
     /*
     --- CONSTANTS ---
       MOVE:           50
@@ -48,7 +48,7 @@ var functionCreepRespawner = {
       },
       { // BUILDER
         role: 'builder',
-        quantity: 3,
+        quantity: 0,
         body: [
           {bodyPart: CARRY, percent: 40},
           {bodyPart: WORK, percent: 40},
@@ -68,7 +68,26 @@ var functionCreepRespawner = {
         bodyLimit: 11,
         spawnIfEnemies: true
       },
-    ];
+      { // CLAIMER
+        role: 'claimer',
+        quantity: 0,
+        body: [],
+        staticBody: [CLAIM, MOVE],
+        targetRoom: 'W29N21',
+        spawnIfEnemies: true
+      },
+      { // CLAIMER
+        role: 'upgrader',
+        quantity: 1,
+        body: [
+          {bodyPart: WORK, percent: 50},
+          {bodyPart: CARRY, percent: 25},
+          {bodyPart: MOVE, percent: 25},
+        ],
+        targetRoom: 'W29N21',
+        spawnIfEnemies: true
+      },
+    ]
 
     let defenciveAndOffensiveCreeps = [
       { // ATTACKER
@@ -91,58 +110,53 @@ var functionCreepRespawner = {
         ],
         spawnIfEnemies: true
       },
-
-      { // CLAIMER
-        role: 'claimer',
-        quantity: 1,
-        body: [
-          {bodyPart: CLAIM, percent: 50},
-          {bodyPart: MOVE, percent: 50},
-        ],
-        spawnIfEnemies: false
-      },
-    ];
+    ]
 
     for (var spawn in Game.spawns) {
-      let spawnObj = Game.spawns[spawn];
+      let spawnObj = Game.spawns[spawn]
 
       // If we're spawning a creep or there is no creep to spawn, return early.
-      if (spawnObj.spawning) return;
+      if (spawnObj.spawning) return
 
       // Calculate total energy in room.
       let extensions = spawnObj.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
-          return (structure.structureType == STRUCTURE_EXTENSION);
+          return (structure.structureType == STRUCTURE_EXTENSION)
         }
       });
 
-      let totalEnergyAvailable = spawnObj.store.getUsedCapacity(RESOURCE_ENERGY);
-      let totalEnergy = spawnObj.store.getCapacity(RESOURCE_ENERGY);
+      let totalEnergyAvailable = spawnObj.store.getUsedCapacity(RESOURCE_ENERGY)
+      let totalEnergy = spawnObj.store.getCapacity(RESOURCE_ENERGY)
 
       if (extensions.length > 0) {
-        for (var extension in extensions) {
-          totalEnergyAvailable = totalEnergyAvailable + extensions[extension].store.getUsedCapacity(RESOURCE_ENERGY);
-          totalEnergy = totalEnergy + extensions[extension].store.getCapacity(RESOURCE_ENERGY);
+        for (let extension in extensions) {
+          totalEnergyAvailable = totalEnergyAvailable + extensions[extension].store.getUsedCapacity(RESOURCE_ENERGY)
+          totalEnergy = totalEnergy + extensions[extension].store.getCapacity(RESOURCE_ENERGY)
         }
       }
 
       // THIS IS A OVERRIDE TO ENSURE ROOM DONT GRIND TO AN HALT.
-      let minerCheck = _.filter(spawnObj.room.find(FIND_MY_CREEPS), (creep) => creep.memory.role === 'miner');
-      let transporterCheck = _.filter(spawnObj.room.find(FIND_MY_CREEPS), (creep) => creep.memory.role === 'transporter');
+      let minerCheck = _.filter(spawnObj.room.find(FIND_MY_CREEPS), (creep) => creep.memory.role === 'miner')
+      let transporterCheck = _.filter(spawnObj.room.find(FIND_MY_CREEPS), (creep) => creep.memory.role === 'transporter')
 
       if ((minerCheck.length < 1) && (totalEnergyAvailable > 260)) {
         spawnObj.spawnCreep([WORK, WORK, MOVE], 'Miner', {memory: {role: 'miner'}})
       } else if ((transporterCheck.length < 1) && (totalEnergyAvailable > 260)) {
         spawnObj.spawnCreep([CARRY, CARRY, CARRY, MOVE, MOVE], 'Transporter', {memory: {role: 'transporter'}})
       } else if (totalEnergyAvailable < totalEnergy) {
-        return;
+        return
       }
 
       for (let iteration = 0; iteration < creepSpawnConfigs.length;) {
-        // creepSpawnConfigs.forEach(function (creepSpawnConfig) {
-        let creeps = _.filter(spawnObj.room.find(FIND_MY_CREEPS), (creep) => creep.memory.role === creepSpawnConfigs[iteration].role);
+
+        // if (creepSpawnConfigs[iteration].role === 'claimer') {
+        //   Game.spawns['Spawn1'].spawnCreep(creepSpawnConfigs[iteration].staticBody, 'Claimer', {memory: {role: 'claimer', targetRoom: creepSpawnConfigs[iteration].targetRoom}})
+        //   return
+        // }
+
+        let creeps = _.filter(spawnObj.room.find(FIND_MY_CREEPS), (creep) => creep.memory.role === creepSpawnConfigs[iteration].role)
         // Rooms can only spawn creeps with a max of 50, so this is our upper limit
-        let maxBodyParts = 50;
+        let maxBodyParts = 50
 
         // TODO: possibly add code to check the room of the creep and where he is located.
 
@@ -153,69 +167,73 @@ var functionCreepRespawner = {
           // if (!previousCreepQuantityMax && previousPriority > creepSpawnConfig.priority) return; // CONTINUE BECAUSE THE PREVIOUS CREEP TYPE OF HIGHER PRIORITY AND IS NOT FULL.
 
           // THIS WORKS OUT HOW MANY BODY PARTS THIS CREEP TYPE CAN HAVE WITH THE BASE RESOURCES.
-          let creepBody = [];
-          let creepBodyCheck = [];
-          let costCheck = 0;
-          let cost = 0;
-          for (let bodyPartConfig of Object.entries(creepSpawnConfigs[iteration].body)) { // THIS BUILDS THE CREEP BODY
-            let bodyPartAmount = Math.floor((totalEnergyAvailable / BODYPART_COST[bodyPartConfig[1].bodyPart]) * (bodyPartConfig[1].percent / 100));
+          let creepBody = []
+          let creepBodyCheck = []
+          let costCheck = 0
+          let cost = 0
+
+          // THIS BUILDS THE CREEP BODY
+          for (let bodyPartConfig of Object.entries(creepSpawnConfigs[iteration].body)) {
+            let bodyPartAmount = Math.floor((totalEnergyAvailable / BODYPART_COST[bodyPartConfig[1].bodyPart]) * (bodyPartConfig[1].percent / 100))
 
             for (let i = 0; i < bodyPartAmount; i++) {
               // PUSH THE REQUIRED AMOUNT OF BODY PARTS ONTO BODY.
-              let tmp = '';
+              let tmp = ''
               switch (bodyPartConfig[1].bodyPart) {
                 case "work":
-                  tmp = WORK;
-                  break;
+                  tmp = WORK
+                  break
                 case "move":
-                  tmp = MOVE;
-                  break;
+                  tmp = MOVE
+                  break
                 case "carry":
-                  tmp = CARRY;
-                  break;
+                  tmp = CARRY
+                  break
                 case "attack":
-                  tmp = ATTACK;
-                  break;
+                  tmp = ATTACK
+                  break
                 case "ranged_attack":
-                  tmp = RANGED_ATTACK;
-                  break;
+                  tmp = RANGED_ATTACK
+                  break
                 case "heal":
-                  tmp = HEAL;
-                  break;
+                  tmp = HEAL
+                  break
                 case "claim":
-                  tmp = CLAIM;
-                  break;
+                  tmp = CLAIM
+                  break
                 case "tough":
-                  tmp = TOUGH;
-                  break;
+                  tmp = TOUGH
+                  break
               }
 
               if (creepBody.length <= maxBodyParts || creepBody.length <= creepSpawnConfigs[iteration].bodyLimit) {
-                creepBodyCheck.push(tmp);
-                costCheck = creepBodyCheck.map((_) => BODYPART_COST[_]).reduce((acc, val) => acc + val, 0);
+              // if (creepBody.length <= maxBodyParts && creepBody.length <= creepSpawnConfigs[iteration].bodyLimit) {
+                creepBodyCheck.push(tmp)
+                costCheck = creepBodyCheck.map((_) => BODYPART_COST[_]).reduce((acc, val) => acc + val, 0)
 
                 if (costCheck < totalEnergyAvailable) {
-                  creepBody = creepBodyCheck;
-                  cost = creepBody.map((_) => BODYPART_COST[_]).reduce((acc, val) => acc + val, 0);
+                  creepBody = creepBodyCheck
+                  cost = creepBody.map((_) => BODYPART_COST[_]).reduce((acc, val) => acc + val, 0)
                 }
               }
             }
           }
 
           if (cost <= totalEnergyAvailable) { // SPAWN CREEP IF BASE HAS ENERGY
-            let newCreepName = (creepSpawnConfigs[iteration].role.charAt(0).toUpperCase() + creepSpawnConfigs[iteration].role.slice(1)) + '_' + spawnObj.room.name + '_' + Game.time;
+            let newCreepName = (creepSpawnConfigs[iteration].role.charAt(0).toUpperCase() + creepSpawnConfigs[iteration].role.slice(1)) + '_' + spawnObj.room.name + '_' + Game.time
 
             if (debug) {
-              console.log('Cost - ', cost, 'Available - ', totalEnergyAvailable, 'Total - ', totalEnergy, ':', newCreepName, creepBody);
+              console.log('Cost - ', cost, 'Available - ', totalEnergyAvailable, 'Total - ', totalEnergy, ':', newCreepName, creepBody)
             }
 
             //SPAWN CREEP
             var returnCode = spawnObj.spawnCreep(creepBody, newCreepName, {
               memory: {
                 role: creepSpawnConfigs[iteration].role,
-                working: false
+                working: false,
+                targetRoom: creepSpawnConfigs[iteration].targetRoom
               }
-            });
+            })
 
             if (debug) {
               // console.log('Spawning new ' + creepSpawnConfigs[iteration].role + ': ' + newCreepName);
@@ -228,21 +246,21 @@ var functionCreepRespawner = {
             // Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE],'Upgrader',{memory:{role:'upgrader'}})
           }
 
-          return;
+          return
         } else {
-          iteration++;
+          iteration++
         }
       }
       // });
 
       // Spawning notification
       if (spawnObj.spawning) {
-        var spawningCreep = Game.creeps[spawnObj.spawning.name];
+        var spawningCreep = Game.creeps[spawnObj.spawning.name]
 
-        spawnObj.room.visual.text('🛠️ ' + spawningCreep.memory.role, spawnObj.pos.x + 1, spawnObj.pos.y, {align: 'left', opacity: 0.8});
+        spawnObj.room.visual.text('🛠️ ' + spawningCreep.memory.role, spawnObj.pos.x + 1, spawnObj.pos.y, {align: 'left', opacity: 0.8})
       }
     }
   }
-};
+}
 
-module.exports = functionCreepRespawner;
+module.exports = functionCreepRespawner

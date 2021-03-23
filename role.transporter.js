@@ -66,12 +66,17 @@ var roleTransporter = {
         // }
       }
     } else {
-      let resources = _.filter(creep.room.find(FIND_DROPPED_RESOURCES));
-      // let resources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES)
+      let resources = _.filter(creep.room.find(FIND_DROPPED_RESOURCES))
 
       if (resources.length > 0) {
         if (creep.pickup(resources[0]) === ERR_NOT_IN_RANGE) {
           creep.moveTo(resources[0], {visualizePathStyle: {stroke: '#fff300'}});
+        }
+      }else if(primaryRefillTargets.length > 0){
+        let storage = _.filter(creep.room.find(STRUCTURE_STORAGE))
+
+        if (creep.pickup(storage[0]) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage[0], {visualizePathStyle: {stroke: '#fff300'}});
         }
       }
     }

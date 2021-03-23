@@ -21,8 +21,19 @@ var roleUpgrader = {
     }
 
     if (creep.memory.upgrading) {
-      if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
+      if(creep.memory.targetRoom){
+        if (creep.room.name !== creep.memory.targetRoom) {
+          let exit = creep.room.findExitTo(creep.memory.targetRoom)
+
+          creep.moveTo(creep.pos.findClosestByRange(exit), {visualizePathStyle: {stroke: '#ffa200'}})
+        } else {
+          //try to claim controller
+          if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffa200'}})
+          }
+        }
+      }else if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffa200'}});
       }
     } else {
       var storage = creep.room.find(FIND_STRUCTURES, {
@@ -40,11 +51,16 @@ var roleUpgrader = {
           creep.moveTo(storage[0], {visualizePathStyle: {stroke: '#ffaa00'}});
         }
       } else if (sources.length > 0) {
-        if (creep.harvest(sources[1]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(sources[1], {visualizePathStyle: {stroke: '#ffaa00'}});
+        if (creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
         }
+      }else if(creep.room.name !== creep.memory.spawnRoom){
+        let exit = creep.room.findExitTo(creep.memory.spawnRoom)
+
+        creep.moveTo(creep.pos.findClosestByRange(exit), {visualizePathStyle: {stroke: '#ffa200'}})
       }
     }
+
   }
 };
 
