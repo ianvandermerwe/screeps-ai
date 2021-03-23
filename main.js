@@ -4,14 +4,13 @@ let functionFlagManager = require('function.flag.manager');
 
 let defenceTower = require('defence.tower');
 
-let roleHarvester = require('role.harvester');
 let roleMiner = require('role.miner');
 let roleTransporter = require('role.transporter');
 let roleUpgrader = require('role.upgrader');
 let roleBuilder = require('role.builder');
 let roleRepairer = require('role.repairer');
 let roleDefender = require('role.defender');
-let roleFlagClaimer = require('role.flag.claimer');
+let roleClaimer = require('role.claimer');
 let roleFlagAttacker = require('role.flag.attacker');
 
 module.exports.loop = function () {
@@ -21,26 +20,25 @@ module.exports.loop = function () {
   // defenceTower.run(tower);
 
   for (let creepHash in Game.creeps) {
-    let creep = Game.creeps[creepHash];
+    let creep = Game.creeps[creepHash]
+
     if (creep.my) {
-      if (creep.memory.role == 'harvester') {
-        roleHarvester.run(creep);
-      } else if (creep.memory.role == 'miner') {
-        roleMiner.run(creep);
-      } else if (creep.memory.role == 'transporter') {
-        roleTransporter.run(creep);
-      } else if (creep.memory.role == 'upgrader') {
-        roleUpgrader.run(creep);
-      } else if (creep.memory.role == 'builder') {
-        roleBuilder.run(creep);
-      } else if (creep.memory.role == 'defender') {
-        roleDefender.run(creep);
-      } else if (creep.memory.role == 'repairer') {
-        roleRepairer.run(creep);
-      } else if (creep.memory.role == 'claimer') {
-        roleFlagClaimer.run(creep);
-      } else if (creep.memory.role == 'attacker') {
-        roleFlagAttacker.run(creep);
+      if (creep.memory.role === 'miner') {
+        roleMiner.run(creep)
+      } else if (creep.memory.role === 'transporter') {
+        roleTransporter.run(creep)
+      } else if (creep.memory.role === 'upgrader') {
+        roleUpgrader.run(creep)
+      } else if (creep.memory.role === 'builder') {
+        roleBuilder.run(creep)
+      } else if (creep.memory.role === 'defender') {
+        roleDefender.run(creep)
+      } else if (creep.memory.role === 'repairer') {
+        roleRepairer.run(creep)
+      } else if (creep.memory.role === 'attacker') {
+        roleFlagAttacker.run(creep)
+      } else if (creep.memory.role === 'claimer') {
+        roleClaimer.run(creep)
       }
     }
   }
