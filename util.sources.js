@@ -1,12 +1,39 @@
 var utilSources = {
   findSourceWithoutMiner: function (creep) {
-    let currentCreepAge = creep.name.split('_');
+    let containerTargets = creep.room.find(FIND_STRUCTURES, {
+      filter: (structure) => {
+        return (structure.structureType === STRUCTURE_CONTAINER) && (structure.store[RESOURCE_ENERGY] < structure.storeCapacity)
+      }
+    });
 
     let miners = creep.room.find(FIND_MY_CREEPS, {
       filter: (creep) => {
         return (creep.memory.role === 'miner')
       }
     });
+
+    if (containerTargets.length > 0) {
+      containerTargets.forEach(function (container) {
+        let containerClear = true
+
+        miners.forEach(function (miner) {
+          if (container.pos.isEqualTo(miner.pos)) {
+            containerClear = false
+          }
+        })
+
+        if (containerClear === true) {
+          console.log(creep.pos.getRangeTo(container))
+          if (creep.pos.getRangeTo(container) === 0) {
+            return creep.pos.findClosestByPath(FIND_SOURCES)[0]
+          } else {
+            creep.moveTo(container)
+          }
+        }
+      })
+    }
+
+    let currentCreepAge = creep.name.split('_');
 
     let sources = creep.room.find(FIND_SOURCES)
     let compareMiner = null

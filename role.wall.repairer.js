@@ -1,10 +1,10 @@
 let unitCreep = require('util.creep');
 
-var roleRepairer = {
+var roleWallRepairer = {
   /** @param {Creep} creep **/
   run: function (creep) {
 
-    var debug = false;
+    var debug = true;
 
     if (unitCreep.checkEnergyCollection(creep)) {
       creep.memory.working = true;
@@ -24,11 +24,6 @@ var roleRepairer = {
       var targets = creep.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
           return (
-              structure.structureType === STRUCTURE_EXTENSION ||
-              structure.structureType === STRUCTURE_SPAWN ||
-              structure.structureType === STRUCTURE_TOWER ||
-              structure.structureType === STRUCTURE_STORAGE ||
-              structure.structureType === STRUCTURE_ROAD ||
               structure.structureType === STRUCTURE_RAMPART ||
               structure.structureType === STRUCTURE_WALL
             ) &&
@@ -53,4 +48,4 @@ var roleRepairer = {
   }
 };
 
-module.exports = roleRepairer;
+module.exports = roleWallRepairer;

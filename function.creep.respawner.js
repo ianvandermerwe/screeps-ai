@@ -48,7 +48,7 @@ var functionCreepRespawner = {
       },
       { // BUILDER
         role: 'builder',
-        quantity: 0,
+        quantity: 2,
         body: [
           {bodyPart: CARRY, percent: 40},
           {bodyPart: WORK, percent: 40},
@@ -59,6 +59,17 @@ var functionCreepRespawner = {
       },
       { // REPAIRER
         role: 'repairer',
+        quantity: 2,
+        body: [
+          {bodyPart: CARRY, percent: 30},
+          {bodyPart: WORK, percent: 40},
+          {bodyPart: MOVE, percent: 30},
+        ],
+        bodyLimit: 11,
+        spawnIfEnemies: true
+      },
+      { // REPAIRER
+        role: 'wall_repairer',
         quantity: 1,
         body: [
           {bodyPart: CARRY, percent: 30},
@@ -68,25 +79,25 @@ var functionCreepRespawner = {
         bodyLimit: 11,
         spawnIfEnemies: true
       },
-      { // CLAIMER
-        role: 'claimer',
-        quantity: 0,
-        body: [],
-        staticBody: [CLAIM, MOVE],
-        targetRoom: 'W29N21',
-        spawnIfEnemies: true
-      },
-      { // CLAIMER
-        role: 'upgrader',
-        quantity: 1,
-        body: [
-          {bodyPart: WORK, percent: 50},
-          {bodyPart: CARRY, percent: 25},
-          {bodyPart: MOVE, percent: 25},
-        ],
-        targetRoom: 'W29N21',
-        spawnIfEnemies: true
-      },
+      // { // REMOTE CLAIMER
+      //   role: 'claimer',
+      //   quantity: 0,
+      //   body: [],
+      //   staticBody: [CLAIM, MOVE],
+      //   targetRoom: 'W29N21',
+      //   spawnIfEnemies: true
+      // },
+      // { // REMOTE UPGRADER
+      //   role: 'upgrader',
+      //   quantity: 0,
+      //   body: [
+      //     {bodyPart: WORK, percent: 50},
+      //     {bodyPart: CARRY, percent: 25},
+      //     {bodyPart: MOVE, percent: 25},
+      //   ],
+      //   targetRoom: 'W29N21',
+      //   spawnIfEnemies: true
+      // },
     ]
 
     let defenciveAndOffensiveCreeps = [
@@ -207,7 +218,7 @@ var functionCreepRespawner = {
               }
 
               if (creepBody.length <= maxBodyParts || creepBody.length <= creepSpawnConfigs[iteration].bodyLimit) {
-              // if (creepBody.length <= maxBodyParts && creepBody.length <= creepSpawnConfigs[iteration].bodyLimit) {
+                // if (creepBody.length <= maxBodyParts && creepBody.length <= creepSpawnConfigs[iteration].bodyLimit) {
                 creepBodyCheck.push(tmp)
                 costCheck = creepBodyCheck.map((_) => BODYPART_COST[_]).reduce((acc, val) => acc + val, 0)
 

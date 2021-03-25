@@ -10,6 +10,7 @@ let roleTransporter = require('role.transporter');
 let roleUpgrader = require('role.upgrader');
 let roleBuilder = require('role.builder');
 let roleRepairer = require('role.repairer');
+let roleWallRepairer = require('role.wall.repairer');
 let roleDefender = require('role.defender');
 let roleClaimer = require('role.claimer');
 let roleFlagAttacker = require('role.flag.attacker');
@@ -28,14 +29,14 @@ let minCreeps = {
 //Mining
 //https://www.youtube.com/watch?v=ehXu5nbQQaI&t=1s
 
+//Container Mining
+//https://www.youtube.com/watch?v=L8V-V-Inwq0&ab_channel=goto64™
+
 let numberOfMiners = _.sum(Game.creeps, (creep) => creep.memory === 'miner')
 let numberOfTransporters = _.sum(Game.creeps, (creep) => creep.memory === 'miner')
 
 module.exports.loop = function () {
   functionCreepRespawner.run();
-
-  // var tower = Game.getObjectById('5eba8a5659c9ad1918b4ab3d');
-  // defenceTower.run(tower);
 
   for (let spawn in Game.spawns) {
     let spawnObj = Game.spawns[spawn]
@@ -48,7 +49,8 @@ module.exports.loop = function () {
     //   }
     // }
 
-      utilCreepSpawner.spawnCreep(spawnObj, 'upgrader', 'Upgrader', [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], 'small', 'W29N21')
+      //utilCreepSpawner.spawnCreep(spawnObj, 'upgrader', 'Upgrader_1', [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], 'small', 'W29N21')
+      //utilCreepSpawner.spawnCreep(spawnObj, 'upgrader', 'Upgrader_2', [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], 'small', 'W29N21')
   }
 
   for (let creepHash in Game.creeps) {
@@ -71,16 +73,18 @@ module.exports.loop = function () {
         roleFlagAttacker.run(creep)
       } else if (creep.memory.role === 'claimer') {
         roleClaimer.run(creep)
+      } else if (creep.memory.role === 'wall_repairer') {
+        roleWallRepairer.run(creep)
       }
     }
   }
 
   for (let roomHash in Game.rooms) {
     let room = Game.rooms[roomHash];
-    var hostiles = room.find(FIND_HOSTILE_CREEPS);
+    let hostiles = room.find(FIND_HOSTILE_CREEPS);
     if (hostiles.length > 0) {
-      // var username = hostiles[0].owner.username;
-      // Game.notify(`User ${username} spotted in room ${room.name}`);
+      let username = hostiles[0].owner.username;
+      Game.notify(`User ${username} spotted in room ${room.name}`);
 
       var towers = room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
 
