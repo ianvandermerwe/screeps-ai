@@ -1,3 +1,6 @@
+let utilCreepActions = require('util.creep.actions')
+let utilCreep = require('util.creep')
+
 var roleUpgrader = {
   /** @param {Creep} creep **/
   run: function (creep) {
@@ -20,32 +23,11 @@ var roleUpgrader = {
       }
     }
 
-    if (creep.memory.upgrading) {
-//      if(creep.memory.targetRoom){
-//        if (creep.room.name !== creep.memory.targetRoom) {
-//          let exit = creep.room.findExitTo(creep.memory.targetRoom)
-//
-//          creep.moveTo(creep.pos.findClosestByRange(exit), {visualizePathStyle: {stroke: '#ffa200'}})
-//        } else {
-          //try to claim controller
-          //if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-          //  creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffa200'}})
-//          }
-//        }
-//      }else 
-      if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffa200'}});
-      }
+    if (creep.memory.upgrading && utilCreepActions.moveToAndUpgradeController(creep)) {
+      //MOVING TO AND UPGRADING
     } else {
-      let resources = _.filter(creep.room.find(FIND_DROPPED_RESOURCES))
-
-      if (resources.length > 0) {
-        if (creep.pickup(resources[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(resources[0], {visualizePathStyle: {stroke: '#fff300'}});
-        }
-      }
+      utilCreep.fetchEnergy(creep);
     }
-
   }
 };
 

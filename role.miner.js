@@ -1,3 +1,4 @@
+let utilCreepActions = require('util.creep.actions');
 let unitSources = require('util.sources');
 
 var roleMiner = {
@@ -6,10 +7,14 @@ var roleMiner = {
 
     var debug = false;
 
-    let closestSource = unitSources.findSourceWithoutMiner(creep);
+    if (utilCreepActions.moveToAndMine(creep)) {
+      // Move to source and mine
+    } else {
+      let closestSource = unitSources.findSourceWithoutMiner(creep);
 
-    if (creep.harvest(closestSource) === ERR_NOT_IN_RANGE) {
-      creep.moveTo(closestSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+      if (creep.harvest(closestSource) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(closestSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+      }
     }
   }
 };

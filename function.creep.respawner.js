@@ -48,7 +48,7 @@ var functionCreepRespawner = {
       },
       { // BUILDER
         role: 'builder',
-        quantity: 2,
+        quantity: 0,
         body: [
           {bodyPart: CARRY, percent: 40},
           {bodyPart: WORK, percent: 40},

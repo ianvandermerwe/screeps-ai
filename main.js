@@ -3,7 +3,7 @@ let functionCreepRespawner = require('function.creep.respawner');
 let functionFlagManager = require('function.flag.manager');
 let utilCreepSpawner = require('util.creep.spawner');
 
-let defenceTower = require('defence.tower');
+let utilTowers = require('util.tower');
 
 let roleMiner = require('role.miner');
 let roleTransporter = require('role.transporter');
@@ -42,15 +42,16 @@ module.exports.loop = function () {
     let spawnObj = Game.spawns[spawn]
     let remoteCreep = false
 
-    // console.log(Memory.creeps)
-    // for (let creep in Memory[0].creeps) {
-    //   if(creep.targetRoom){
-    //     remoteCreep = true
-    //   }
-    // }
+    // utilCreepSpawner.spawnCreep(spawnObj, 'claimer', 'Claimer', [CLAIM, MOVE], 'small', 'E25S13')
 
-      //utilCreepSpawner.spawnCreep(spawnObj, 'upgrader', 'Upgrader_1', [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], 'small', 'W29N21')
-      //utilCreepSpawner.spawnCreep(spawnObj, 'upgrader', 'Upgrader_2', [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], 'small', 'W29N21')
+
+    utilCreepSpawner.spawnCreep(spawnObj, 'miner', 'Remote_Miner_1', [WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE], 'small', 'E25S13')
+    // utilCreepSpawner.spawnCreep(spawnObj, 'miner', 'Remote_Miner_2', [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE], 'small', 'E25S13')
+
+    // utilCreepSpawner.spawnCreep(spawnObj, 'transporter', 'Remote_Transporter_1', [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE], 'small', 'E25S13')
+    // utilCreepSpawner.spawnCreep(spawnObj, 'transporter', 'Remote_Transporter_2', [WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE], 'small', 'E25S13')
+
+    utilCreepSpawner.spawnCreep(spawnObj, 'upgrader', 'Upgrader_1', [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], 'small', 'E25S13')
   }
 
   for (let creepHash in Game.creeps) {
@@ -85,13 +86,12 @@ module.exports.loop = function () {
     if (hostiles.length > 0) {
       let username = hostiles[0].owner.username;
       Game.notify(`User ${username} spotted in room ${room.name}`);
-
-      var towers = room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
-
-      towers.forEach(function (tower) {
-        defenceTower.run(tower);
-      });
     }
+
+    var towers = room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+    towers.forEach(function (tower) {
+      utilTowers.run(tower);
+    });
   }
 
   memoryCleanup.run();

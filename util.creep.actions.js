@@ -1,10 +1,12 @@
+let unitSources = require('util.sources');
+
 var utilCreepActions = {
   moveToAndBuild: function (creep, object, room = null) {
     let constructionSites = null
 
-    if(room === null){
+    if (room === null) {
       constructionSites = creep.room.find(object);
-    }else{
+    } else {
       constructionSites = room.find(object);
     }
 
@@ -14,7 +16,7 @@ var utilCreepActions = {
         creep.moveTo(constructionSites[0], {visualizePathStyle: {stroke: '#ffffff'}})
         creep.memory.current_action = 'moving_to_destination ' + constructionSites[0].pos
         return true
-      }else{
+      } else {
         creep.memory.current_action = 'building_structure ' + constructionSites[0].pos
       }
     }
@@ -22,56 +24,53 @@ var utilCreepActions = {
     // NO BUILDINGS FOUND.
     return false
   },
-  moveToAndMine: function (creep, object, room = null){
-    let miningNodes = null
+  moveToAndMine: function (creep, object) {
 
-    if(room === null){
-      miningNodes = creep.room.find(object);
-    }else{
-      miningNodes = room.find(object);
+    if (creep.memory.targetRoom) {
+      if (creep.room.name !== creep.memory.targetRoom) {
+        let exit = creep.room.findExitTo(creep.memory.targetRoom)
+
+        creep.moveTo(creep.pos.findClosestByRange(exit), {visualizePathStyle: {stroke: '#ffa200'}})
+        return true
+      }
     }
 
-    if (miningNodes.length > 0) {
-      // ADD A CHECK TO SEE IF A MINER IS ON IT
-      if (creep.build(miningNodes[0]) === ERR_NOT_IN_RANGE) {
-        // NODE FOUND AND IS GOING TO MINE IT.
-        creep.moveTo(miningNodes[0], {visualizePathStyle: {stroke: '#ffffff'}})
-        creep.memory.current_action = 'moving_to_destination ' + miningNodes[0].pos
+    let closestSource = unitSources.findSourceWithoutMiner(creep);
+
+    if (closestSource.length > 0) {
+      if (creep.harvest(closestSource) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(closestSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+        creep.memory.current_action = 'moving_to_destination ' + closestSource.pos
         return true
-      }else{
-        creep.memory.current_action = 'mining_node ' + miningNodes[0].pos
+      } else {
+        creep.memory.current_action = 'mining_node ' + closestSource.pos
+        return true
       }
     }
 
     // NO NODES FOUND.
     return false
   },
-  moveToAndUpgradeController: function (creep, room = null) {
-    let controller = null
+  moveToAndUpgradeController: function (creep) {
 
-    if(room === null){
-      controller = creep.room.controller
-    }else{
-      controller = room.controller
-    }
+    if (creep.memory.targetRoom) {
+      if (creep.room.name !== creep.memory.targetRoom) {
+        let exit = creep.room.findExitTo(creep.memory.targetRoom)
 
-    if (controller.length > 0) {
-      if (creep.upgradeController(controller[0]) === ERR_NOT_IN_RANGE) {
-        // CONTROLLER FOUND AND IS GOING TO UPGRADE IT.
-        creep.moveTo(controller[0], {visualizePathStyle: {stroke: '#ffffff'}})
-        creep.memory.current_action = 'moving_to_destination ' + controller[0].pos
+        creep.moveTo(creep.pos.findClosestByRange(exit), {visualizePathStyle: {stroke: '#ffa200'}})
         return true
-      }else{
-        creep.memory.current_action = 'upgrading_controller ' + controller[0].pos
       }
     }
 
-    // CONTROLLER NOT FOUND.
-    return false
-  },
-  moveToAndFetchEnergy: function(creep, room) {
+    // try to upgrade controller
+    if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
+      creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffa200'}})
+      creep.memory.current_action = 'moving_to_destination ' + creep.room.controller.pos
+      return true
+    }
 
-  },
+    creep.memory.current_action = 'upgrading_controller ' + creep.room.controller.pos
+  }
 };
 
 module.exports = utilCreepActions

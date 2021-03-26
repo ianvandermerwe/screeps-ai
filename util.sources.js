@@ -14,6 +14,10 @@ var utilSources = {
 
     if (containerTargets.length > 0) {
       containerTargets.forEach(function (container) {
+        // if (creep.pos.getRangeTo(container) === 0) {
+        //   return creep.pos.findClosestByPath(FIND_SOURCES)[0]
+        // }
+          
         let containerClear = true
 
         miners.forEach(function (miner) {
@@ -23,11 +27,10 @@ var utilSources = {
         })
 
         if (containerClear === true) {
-          console.log(creep.pos.getRangeTo(container))
           if (creep.pos.getRangeTo(container) === 0) {
             return creep.pos.findClosestByPath(FIND_SOURCES)[0]
           } else {
-            creep.moveTo(container)
+            return creep.moveTo(container)
           }
         }
       })

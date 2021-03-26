@@ -22,7 +22,8 @@ let utilCreepSpawner = {
       memory: memory
     })
 
-    // console.log(response)
+    console.log(response)
+    return response
   },
 }
 
